@@ -40,6 +40,13 @@ function checkPassword(password, callback) {
 	function nextAppID(ignoreRateLimit, fromTimeout) {
 		if (currentAppID === appIDs.length) return;
 
+		if (queries > 100) {
+			return setTimeout(function() {
+				nextAppID(ignoreRateLimit, false);
+			}, 50);
+		}
+		queries++;
+
 		if (rateLimited && !fromTimeout) {
 			return setTimeout(function() {
 				nextAppID(ignoreRateLimit, ignoreRateLimit);
@@ -47,7 +54,6 @@ function checkPassword(password, callback) {
 		}
 
 		var appID = appIDs[currentAppID++];
-		queries++;
 
 		tester.tryPassword(password, appID, function(err, result) {
 			done++;
