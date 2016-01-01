@@ -16,16 +16,18 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 	var elapsed = 0;
 	var rateLimited = false;
 
+	var done = 0;
+
 	console.log();
 	setInterval(function() {
-		if (currentAppID === appIDs.length) {
+		if (done === appIDs.length) {
 			console.log('Done!');
 			return;
 		}
 
 		elapsed++;
 		process.stdout.write('\x1b[1000D\x1b[K\x1b[A');
-		console.log((currentAppID + '/' + appIDs.length + '        ').substr(0,10) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + elapsed + 's');
+		console.log((done + '/' + appIDs.length + '        ').substr(0,10) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + elapsed + 's');
 		queries = 0;
 	}, 1000);
 
@@ -44,9 +46,11 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 		}
 
 		var appID = appIDs[currentAppID++];
+		queries++;
 
 		tester.tryPassword(password, appID, function(err, result) {
-			queries++;
+			done++;
+
 			if (err) {
 				rateLimited = true;
 				currentAppID--;
