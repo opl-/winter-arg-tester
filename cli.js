@@ -4,23 +4,18 @@ var https = require('https');
 
 var remote = 'warg.ngrok.io';
 
-var config = JSON.parse(fs.readFileSync('config.txt', 'utf8'));
+var config = require('./config.json');
 
-var ratelimit = config.ratelimit || 95;
-var applist = config.applist || 'app-list.txt';
-var dev = config.debug || false;
+config.rateLimit = config.rateLimit || 95;
+config.applist = config.applist || 'app-list.txt';
+config.debug = config.debug || false;
 
-function debug(str) {
-	if (dev) {
-		console.log('### ' + str);
-	}
+function debug() {
+	if (config.debug) console.log.apply(console, arguments.unshift('[debug]'));
 }
 
-debug('Ratelimit: ' + ratelimit);
-debug('Applist: ' + applist);
-
 function checkPassword(password, callback) {
-	var appIDs = fs.readFileSync(applist).toString().replace(/\r/g, '').split('\n');
+	var appIDs = fs.readFileSync(config.applist).toString().replace(/\r/g, '').split('\n');
 	var currentAppID = 0;
 
 	var results = [];
@@ -50,7 +45,7 @@ function checkPassword(password, callback) {
 	function nextAppID(ignoreRateLimit, fromTimeout) {
 		if (currentAppID === appIDs.length) return;
 
-		if (queries > ratelimit) {
+		if (queries > config.rateLimit) {
 			return setTimeout(function() {
 				nextAppID(ignoreRateLimit, false);
 			}, 50);
@@ -166,6 +161,7 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 	}
 
 	function getNextPassword() {
+		console.log('test');
 		var req = https.request({
 			host: remote,
 			path: '/nextpassword',
