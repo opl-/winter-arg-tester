@@ -32,15 +32,10 @@ function checkPassword(password, callback) {
 		}
 	}, 1000);
 
-	process.on('SIGINT', function() {
-		process.stdout.write('\n\r');
-		process.exit();
-	});
-
 	function nextAppID(ignoreRateLimit, fromTimeout) {
 		if (currentAppID === appIDs.length) return;
 
-		if (queries > 100) {
+		if (queries > 95) {
 			return setTimeout(function() {
 				nextAppID(ignoreRateLimit, false);
 			}, 50);
@@ -99,10 +94,20 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 } else if (process.argv[2] === 'password') {
 	if (process.argv.length < 3) return printHelp();
 
+	process.on('SIGINT', function() {
+		process.stdout.write('\n\r');
+		process.exit();
+	});
+
 	checkPassword(process.argv.slice(3, process.argv.length).join(' '), function(result) {
 		process.exit();
 	});
 } else if (process.argv[2] === 'bot') {
+	process.on('SIGINT', function() {
+		process.stdout.write('\n\r');
+		process.exit();
+	});
+
 	function postResults(resp, result) {
 		var req = https.request({
 			host: remote,
