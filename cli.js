@@ -53,11 +53,11 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 			} else {
 				if (!result) {
 				} else if (result.url) {
-					console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url);
+					console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url + '\n');
 				} else if (result.response) {
-					console.log('[found response] app=' + appID + ', password=' + password + ', response=' + result.response);
+					console.log('[found response] app=' + appID + ', password=' + password + ', response=' + result.response + '\n');
 				} else {
-					console.log('[found weird] app=' + appID + ', password=' + password + ', result=' + JSON.stringify(result));
+					console.log('[found weird] app=' + appID + ', password=' + password + ', result=' + JSON.stringify(result) + '\n');
 				}
 				nextAppID();
 			}
