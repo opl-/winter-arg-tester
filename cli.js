@@ -20,15 +20,15 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 
 	console.log();
 	setInterval(function() {
-		if (done === appIDs.length) {
-			console.log('Done!');
-			return;
-		}
-
 		elapsed++;
 		process.stdout.write('\x1b[1000D\x1b[K\x1b[A');
 		console.log((done + '/' + appIDs.length + '        ').substr(0,10) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + elapsed + 's');
 		queries = 0;
+
+		if (done === appIDs.length) {
+			console.log('Done!');
+			return process.exit();
+		}
 	}, 1000);
 
 	process.on('SIGINT', function() {
