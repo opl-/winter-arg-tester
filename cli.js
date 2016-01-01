@@ -4,8 +4,23 @@ var https = require('https');
 
 var remote = 'warg.ngrok.io';
 
+var config = JSON.parse(fs.readFileSync('config.txt', 'utf8'));
+
+var ratelimit = config.ratelimit || 95;
+var applist = config.applist || 'app-list.txt';
+var dev = config.debug || false;
+
+function debug(str) {
+	if (dev) {
+		console.log('### ' + str);
+	}
+}
+
+debug('Ratelimit: ' + ratelimit);
+debug('Applist: ' + applist);
+
 function checkPassword(password, callback) {
-	var appIDs = fs.readFileSync('app-list.txt').toString().replace(/\r/g, '').split('\n');
+	var appIDs = fs.readFileSync(applist).toString().replace(/\r/g, '').split('\n');
 	var currentAppID = 0;
 
 	var results = [];
@@ -35,7 +50,7 @@ function checkPassword(password, callback) {
 	function nextAppID(ignoreRateLimit, fromTimeout) {
 		if (currentAppID === appIDs.length) return;
 
-		if (queries > 95) {
+		if (queries > ratelimit) {
 			return setTimeout(function() {
 				nextAppID(ignoreRateLimit, false);
 			}, 50);
@@ -84,7 +99,7 @@ function printHelp() {
 	console.log('== help');
 	console.log('Prints this message.');
 	console.log('== password <password>');
-	console.log('Check <password> against all app ids listed in app-list.txt. Don\'t use quotes!');
+	console.log('Check <password> against all app ids listed in a text file (default app-list.txt). Don\'t use quotes!');
 	console.log('== bot');
 	console.log('Automatically checks passwords.');
 }
