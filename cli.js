@@ -152,6 +152,13 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 			});
 		});
 
+		req.on('error', function(err) {
+			console.log('Error when posting results. Retrying in 10 seconds.', err);
+			setTimeout(function() {
+				postResults(resp, result);
+			}, 10000);
+		});
+
 		req.write(JSON.stringify({
 			id: resp.id,
 			result: result
@@ -190,6 +197,10 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 					setTimeout(getNextPassword, 10000);
 				}
 			});
+		});
+		req.on('error', function(err) {
+			console.log('Error when getting next password. Retrying in 10 seconds.', err);
+			setTimeout(getNextPassword, 10000);
 		});
 		req.end();
 	}
