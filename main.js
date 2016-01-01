@@ -30,6 +30,11 @@ function tryPassword(password, app, callback) {
 			}
 		});
 	});
+	res.on('error', function(err) {
+		setTimeout(function() {
+			tryPassword(password, app, callback);
+		}, 2000);
+	});
 	req.end();
 }
 
