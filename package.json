@@ -1,0 +1,12 @@
+{
+  "name": "password-tester",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "bin": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "opl",
+  "license": "MIT"
+}
