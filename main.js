@@ -20,10 +20,10 @@ function tryPassword(password, app, callback) {
 			var result = undefined;
 			try {
 				result = JSON.parse(req.response);
-				if (typeof(result) === 'object' && (!Array.isArray(result) || result.length > 0)) {
-					return callback(undefined, result);
-				} else {
+				if (result && Array.isArray(result) && result.length === 0) {
 					return callback(undefined, undefined);
+				} else {
+					return callback(undefined, result);
 				}
 			} catch (e) {
 				return callback(e, undefined);
