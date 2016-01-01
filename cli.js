@@ -5,7 +5,7 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 	console.log('== help');
 	console.log('Prints this message.');
 	console.log('== password <password>');
-	console.log('Check <password> against all app ids listed in app-list.txt');
+	console.log('Check <password> against all app ids listed in app-list.txt. Don\'t use quotes!');
 } else if (process.argv[2] === 'password') {
 	var appIDs = fs.readFileSync('app-list.txt').toString().split('\n');
 	var currentAppID = 0;
