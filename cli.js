@@ -161,7 +161,6 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 	}
 
 	function getNextPassword() {
-		console.log('test');
 		var req = https.request({
 			host: remote,
 			path: '/nextpassword',
