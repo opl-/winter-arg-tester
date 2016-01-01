@@ -1,0 +1,4 @@
+{
+  "ratelimit": 95,
+  "applist": "app-list.txt",
+ }
