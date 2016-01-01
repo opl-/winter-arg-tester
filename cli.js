@@ -45,7 +45,7 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 
 		var appID = appIDs[currentAppID++];
 
-		tester.tryPassword(password, appID, false, function(err, result) {
+		tester.tryPassword(password, appID, function(err, result) {
 			queries++;
 			if (err) {
 				rateLimited = true;
