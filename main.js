@@ -14,7 +14,7 @@ function tryPassword(password, app, callback) {
 			req.response = (req.response || '') + data.toString();
 		}).on('end', function() {
 			if (res.statusCode !== 200) {
-				return callback({error: 'Status code !== 200 (' + res.statusCode + '). Rate limited?', rateLimited: true}, undefined);
+				return callback({error: 'Status code !== 200 (' + res.statusCode + '). Rate limited?', response: req.response}, undefined);
 			}
 
 			var result = undefined;
