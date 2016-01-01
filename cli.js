@@ -22,7 +22,7 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 	setInterval(function() {
 		elapsed++;
 		process.stdout.write('\x1b[1000D\x1b[K\x1b[A');
-		console.log((done + '/' + appIDs.length + '        ').substr(0,10) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + elapsed + 's');
+		console.log((done + '/' + appIDs.length + '        ').substr(0,10) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + (elapsed + 's     ').substr(0,5) + ' ' + (rateLimited ? '! RATE LIMITED (waiting) !' : ''));
 		queries = 0;
 
 		if (done === appIDs.length) {
@@ -55,6 +55,7 @@ if (process.argv.length < 4 || process.argv[2] === 'help') {
 				rateLimited = true;
 				currentAppID--;
 			} else {
+				rateLimited = false;
 				if (!result) {
 				} else if (result.url) {
 					console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url + '\n');
