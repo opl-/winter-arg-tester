@@ -75,15 +75,13 @@ function checkPassword(password, callback) {
 				rateLimited = false;
 				done++;
 				if (result) {
+					process.stdout.write('\x07');
 					if (result.url) {
 						console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url + '\n');
-						console.log('\u0007');
 					} else if (result.response) {
 						console.log('[found response] app=' + appID + ', password=' + password + ', response=' + result.response + '\n');
-						console.log('\u0007');
 					} else {
 						console.log('[found weird] app=' + appID + ', password=' + password + ', result=' + JSON.stringify(result) + '\n');
-						console.log('\u0007');
 					}
 
 					results.push({
