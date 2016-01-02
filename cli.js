@@ -37,7 +37,7 @@ function checkPassword(password, callback) {
 	var intervalID = setInterval(function() {
 		elapsed++;
 		process.stdout.write('\x1b[1000D\x1b[K\x1b[A');
-		console.log((done + '/' + appIDs.length + '        ').substr(0,10) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + (elapsed + 's     ').substr(0,5) + ' ' + (rateLimited ? '! RATE LIMITED (waiting) !' : ''));
+		console.log((done + '/' + appIDs.length + '        ').substr(0,11) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + (elapsed + 's     ').substr(0,5) + ' ' + (rateLimited ? '! RATE LIMITED (waiting) !' : ''));
 		queries = 0;
 
 		if (done === appIDs.length) {
