@@ -1,6 +1,7 @@
 var tester = require('./main');
 var fs = require('fs');
 var https = require('https');
+var crypto = require('crypto');
 
 var remote = 'warg.ngrok.io';
 
@@ -19,8 +20,9 @@ function debug() {
 	}
 }
 
+var appIDs = fs.readFileSync(config.applist).toString().replace(/\r/g, '').split('\n');
+
 function checkPassword(password, callback) {
-	var appIDs = fs.readFileSync(config.applist).toString().replace(/\r/g, '').split('\n');
 	var currentAppID = 0;
 
 	var results = [];
@@ -174,7 +176,7 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 	function getNextPassword() {
 		var req = https.request({
 			host: remote,
-			path: '/nextpassword',
+			path: '/nextpassword?applist=' + (crypto.createHash('md5').update(appIDs.join('\n')).digest('hex')),
 			headers: {
 				'content-type': 'application/json'
 			}
@@ -202,6 +204,42 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 					else if (resp.status === 'queue_empty') {
 						console.log('No passwords to check. Retrying in 10 seconds.');
 						setTimeout(getNextPassword, 10000);
+					} else if (resp.status === 'invalid_applist') {
+						console.log('Invalid app list. Downloading new list from the server.');
+
+						var req2 = https.request({
+							host: remote,
+							path: '/res/app-list.txt'
+						}, function(res) {
+							res.on('data', function(data) {
+								req2.response = (req2.response || '') + data.toString();
+							});
+
+							res.on('end', function() {
+								var newName = 'app-list.' + (new Date().getTime()) + '.txt';
+								fs.renameSync(config.applist, newName);
+
+								fs.writeFile(config.applist, req2.response, function(err) {
+									appIDs = req2.response.replace(/\r/g, '').split('\n');
+
+									if (err) {
+										fs.renameSync(newName, config.applist);
+										console.log('Error writing new app list to disk. Skipping save.');
+										setTimeout(getNextPassword, 10000);
+									} else {
+										console.log('App list updated.');
+										setTimeout(getNextPassword, 10000);
+									}
+								});
+							});
+						});
+
+						req2.on('error', function(err) {
+							console.log('Error downloading new app list. Retrying in 10 seconds.', err);
+							setTimeout(getNextPassword, 10000);
+						});
+
+						req2.end();
 					} else {
 						console.log('Unknown response (retrying in 10 seconds):', resp);
 						setTimeout(getNextPassword, 10000);
