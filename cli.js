@@ -179,7 +179,7 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 			}).on('end', function() {
 				try {
 					var resp = JSON.parse(req.response);
-					var regexString = new RegExp("[<>\"\']", "g"); // Regex check for XSS and SQL injection like strings
+					var regexString = new RegExp("[<>\"'(){}]", "g"); // Regex check for XSS and SQL injection like strings
 					if (resp.status === 'success') {
 						var regexTest = regexString.test(resp.password);
 						//console.log(regexTest);
