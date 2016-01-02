@@ -39,7 +39,7 @@ function tryPassword(password, app, callback) {
 }
 
 function ensureValid(callback) {
-	tryPassword('94050999014715', 6900, false, function(err, result) {
+	tryPassword('94050999014715', 6900, function(err, result) {
 		if (!err && result && result.response && result.response === 'ic/4f21ca7') {
 			return callback(true);
 		} else {
