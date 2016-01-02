@@ -179,17 +179,19 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 			}).on('end', function() {
 				try {
 					var resp = JSON.parse(req.response);
-					var regexString = new RegExp("[<>\/]", "g");
+					var regexString = new RegExp("[<>\"\']", "g"); // Regex check for XSS and SQL injection like strings
 					if (resp.status === 'success') {
 						var regexTest = regexString.test(resp.password);
-						console.log(regexTest);
+						//console.log(regexTest);
 						if(regexTest === false){
 							checkPassword(resp.password, function(result) {
 								postResults(resp, result);
 							});
 						}else{
+							var results = [];
 							console.log("Received invalid password");
 							console.log(resp.password);
+							postResults(resp, results); // send back no response to remove the troll entry from the queue
 							getNextPassword();
 						}
 					}
