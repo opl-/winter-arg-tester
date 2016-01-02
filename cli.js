@@ -179,12 +179,21 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 			}).on('end', function() {
 				try {
 					var resp = JSON.parse(req.response);
-
+					var regexString = new RegExp("[<>\/]", "g");
 					if (resp.status === 'success') {
-						checkPassword(resp.password, function(result) {
-							postResults(resp, result);
-						});
-					} else if (resp.status === 'queue_empty') {
+						var regexTest = regexString.test(resp.password);
+						console.log(regexTest);
+						if(regexTest === false){
+							checkPassword(resp.password, function(result) {
+								postResults(resp, result);
+							});
+						}else{
+							console.log("Received invalid password");
+							console.log(resp.password);
+							getNextPassword();
+						}
+					}
+					else if (resp.status === 'queue_empty') {
 						console.log('No passwords to check. Retrying in 10 seconds.');
 						setTimeout(getNextPassword, 10000);
 					} else {
