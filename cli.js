@@ -75,6 +75,7 @@ function checkPassword(password, callback) {
 				rateLimited = false;
 				done++;
 				if (result) {
+					process.stdout.write('\x07');
 					if (result.url) {
 						console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url + '\n');
 					} else if (result.response) {
