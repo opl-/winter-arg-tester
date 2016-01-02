@@ -192,7 +192,6 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 							console.log("Received invalid password");
 							console.log(resp.password);
 							postResults(resp, results); // send back no response to remove the troll entry from the queue
-							getNextPassword();
 						}
 					}
 					else if (resp.status === 'queue_empty') {
