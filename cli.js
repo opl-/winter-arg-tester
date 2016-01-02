@@ -11,7 +11,12 @@ config.applist = config.applist || 'app-list.txt';
 config.debug = config.debug || false;
 
 function debug() {
-	if (config.debug) console.log.apply(console, arguments.unshift('[debug]'));
+	if (config.debug) {
+		var args = [];
+		args[0] = '[debug]';
+		for (var i = 0; i < arguments.length; i++) args[i + 1] = arguments[i];
+		console.log.apply(console, args);
+	}
 }
 
 function checkPassword(password, callback) {
