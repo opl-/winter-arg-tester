@@ -61,13 +61,12 @@ function checkPassword(password, callback) {
 		var appID = appIDs[currentAppID++];
 
 		tester.tryPassword(password, appID, function(err, result) {
-			done++;
-
 			if (err) {
 				rateLimited = true;
 				currentAppID--;
 			} else {
 				rateLimited = false;
+				done++;
 				if (result) {
 					if (result.url) {
 						console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url + '\n');
@@ -193,6 +192,7 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 						setTimeout(getNextPassword, 10000);
 					}
 				} catch (e) {
+					console.log(req.response);
 					console.log('Exception when getting next password. Retrying in 10 seconds.', e);
 					setTimeout(getNextPassword, 10000);
 				}
