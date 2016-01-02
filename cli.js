@@ -23,15 +23,14 @@ function debug() {
 var appIDs = fs.readFileSync(config.applist).toString().replace(/\r/g, '').split('\n');
 
 function checkPassword(password, callback) {
-	var currentAppID = 0;
-
 	var results = [];
 
 	var queries = 0;
 	var elapsed = 0;
 	var rateLimited = false;
 
-	var done = 0;
+	var left = [];
+	for (var i = 0; i < appIDs.length; i++) left[i] = appIDs[i];
 
 	console.log('== Checking password: ' + password);
 
@@ -39,10 +38,10 @@ function checkPassword(password, callback) {
 	var intervalID = setInterval(function() {
 		elapsed++;
 		process.stdout.write('\x1b[1000D\x1b[K\x1b[A');
-		console.log((done + '/' + appIDs.length + '        ').substr(0,11) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + (elapsed + 's     ').substr(0,5) + ' ' + (rateLimited ? '! RATE LIMITED (waiting) !' : ''));
+		console.log(((appIDs.length - left.length) + '/' + appIDs.length + '        ').substr(0,11) + ' ' + (queries + 'q/s       ').substr(0,8) + ' ' + (elapsed + 's     ').substr(0,5) + ' ' + (rateLimited ? '! RATE LIMITED (waiting) !' : ''));
 		queries = 0;
 
-		if (done === appIDs.length) {
+		if (left.length === 0) {
 			console.log('Done!');
 			clearInterval(intervalID);
 			return callback(results);
@@ -50,7 +49,7 @@ function checkPassword(password, callback) {
 	}, 1000);
 
 	function nextAppID(ignoreRateLimit, fromTimeout) {
-		if (currentAppID === appIDs.length) return;
+		if (left.length === 0) return;
 
 		if (queries > config.rateLimit) {
 			return setTimeout(function() {
@@ -65,15 +64,15 @@ function checkPassword(password, callback) {
 			}, 15000);
 		}
 
-		var appID = appIDs[currentAppID++];
+		var appID = left[0];
 
 		tester.tryPassword(password, appID, function(err, result) {
 			if (err) {
 				rateLimited = true;
-				currentAppID--;
+				left.splice(0, 0, appID);
 			} else {
 				rateLimited = false;
-				done++;
+				left.splice(left.indexOf(appID), 1);
 				if (result) {
 					if (result.url) {
 						console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url + '\n');
@@ -88,8 +87,8 @@ function checkPassword(password, callback) {
 						result: result
 					});
 				}
-				nextAppID(ignoreRateLimit);
 			}
+			nextAppID(ignoreRateLimit);
 		});
 	}
 
