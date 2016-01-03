@@ -97,4 +97,4 @@ module.exports = {
 	tryPassword: tryPassword,
 	tryWintercomic: tryWintercomic,
 	ensureValid: ensureValid
-}
+};
