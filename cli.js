@@ -203,7 +203,7 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 								}
 
 								checkPassword(resp.password, function(result) {
-									if (wintercomicResult) result.push(wintercomicResult);
+									if (winterResult) result.push(winterResult);
 									postResults(resp, result);
 								});
 							});
