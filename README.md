@@ -10,12 +10,12 @@ How do I use this?
   * `node cli password <password>` where `<password>` is the phrase you want to test to check it for all games.
   * `node cli bot` to run in bot mode, which automatically gets passwords from a database and tests them without you having to do anything.
   
- Tor support?
+Tor support?
 ---
 Tor support thanks to Fillerix99.
 1. Download and install Tor browser [Here](https://www.torproject.org/index.html.en).
 2. Run Tor Browser in background.
-3. Edit file tor.json and set false to true.
+3. Edit config.json and set the tor config to "true".
 4. Start the script as normal in bot or password mode and all traffic will be 
 "proxied" with the help of tor.
 
