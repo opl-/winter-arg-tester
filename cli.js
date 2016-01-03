@@ -3,6 +3,8 @@ var fs = require('fs');
 var https = require('https');
 var crypto = require('crypto');
 
+var VERSION = 2;
+
 var remote = 'warg.ngrok.io';
 
 var config = require('./config.json');
@@ -176,7 +178,7 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 	function getNextPassword() {
 		var req = https.request({
 			host: remote,
-			path: '/nextpassword?applist=' + (crypto.createHash('md5').update(appIDs.join('\n')).digest('hex')),
+			path: '/nextpassword?client=' + encodeURIComponent(VERSION) + '&applist=' + (crypto.createHash('md5').update(appIDs.join('\n')).digest('hex')),
 			headers: {
 				'content-type': 'application/json'
 			}
@@ -191,8 +193,11 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 						var regexTest = regexString.test(resp.password);
 						//console.log(regexTest);
 						if(regexTest === false){
-							checkPassword(resp.password, function(result) {
-								postResults(resp, result);
+							tester.tryWintercomic(resp.password, function(err, winterResult) {
+								checkPassword(resp.password, function(result) {
+									if (wintercomicResult) result.push(wintercomicResult);
+									postResults(resp, result);
+								});
 							});
 						}else{
 							var results = [];
