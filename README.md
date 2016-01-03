@@ -17,13 +17,17 @@ Tor support thanks to Fillerix99 and nepeat.
 
 If you don't know how to setup tor:
 
-1. Download and install Tor browser [here](https://www.torproject.org/index.html.en).
-2. Run Tor Browser in background.
-3. Edit config.json and change `"tor": false` to `"tor": true`.
-4. Start the script as usual in bot or password mode and all traffic will be sent through tor.
+1. Open a console in the directory you downloaded the code to.
+2. Run `npm install`.
+3. Download and install Tor Browser [here](https://www.torproject.org/index.html.en).
+4. Run Tor Browser in background.
+5. Edit config.json and change `"tor": false` to `"tor": true`.
+6. Start the script as usual in bot or password mode and all traffic will be sent through tor.
 
 If you know how to setup tor:
 
-1. Start tor.
-2. Edit config.json and set `tor` to `{"port": 9050}` (or whichever port you are using).
-3. Run the script like you normally would.
+1. Open a console in the directory you downloaded the code to.
+2. Run `npm install`.
+3. Start tor.
+4. Edit config.json and set `tor` to `{"port": 9050}` (or whichever port you are using).
+5. Run the script like you normally would.
