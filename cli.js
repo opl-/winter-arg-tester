@@ -194,6 +194,14 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 						//console.log(regexTest);
 						if(regexTest === false){
 							tester.tryWintercomic(resp.password, function(err, winterResult) {
+								if (winterResult) {
+									if (winterResult.url) {
+										console.log('[wintercomic redirect] password=' + resp.password + ', url=' + winterResult.url);
+									} else {
+										console.log('[wintercomic unusual] password=' + resp.password + ', result:', winterResult);
+									}
+								}
+
 								checkPassword(resp.password, function(result) {
 									if (wintercomicResult) result.push(wintercomicResult);
 									postResults(resp, result);
