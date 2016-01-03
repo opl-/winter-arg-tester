@@ -2,97 +2,62 @@
 
 var http = require('http');
 var fs = require("fs");
-var Socks = require('socks');
 var config = require('./config.json');
 
-var socksAgent = new Socks.Agent({
-    proxy: {
-        ipaddress: "127.0.0.1",
-        port: 9150,
-        type: 5,
-    }},
-    false, // we are connecting to tor, set to false
-    false // rejectUnauthorized option passed to tor, set to false
-);
+var torAgent = undefined;
+if (config.tor) {
+	var Socks = require('socks');
 
-config.tor = config.tor || "false";
+	torAgent = new Socks.Agent({
+		proxy: {
+			ipaddress: config.tor && config.tor.host ? config.tor.host : '127.0.0.1',
+			port: config.tor && config.tor.port ? config.tor.port : 9150,
+			type: 5,
+		}
+	}, false, false);
+}
 
 function tryPassword(password, app, callback) {
-	if (config.tor == "true") {
-		var req = http.request({
-			hostname: 'store.steampowered.com',
-			agent: socksAgent,
-			path: '/actions/clues?key=' + encodeURIComponent(password) + '&_=' + (new Date().getTime()),
-			headers: {
-				Referer: 'http://store.steampowered.com/app/' + app + '/'
+	var req = http.request({
+		hostname: 'store.steampowered.com',
+		agent: torAgent,
+		path: '/actions/clues?key=' + encodeURIComponent(password) + '&_=' + (new Date().getTime()),
+		headers: {
+			Referer: 'http://store.steampowered.com/app/' + app + '/'
+		}
+	}, function(res) {
+		res.on('data', function(data) {
+			req.response = (req.response || '') + data.toString();
+		}).on('end', function() {
+			if (res.statusCode !== 200) {
+				return callback({error: 'Status code !== 200 (' + res.statusCode + '). Rate limited?', response: req.response}, undefined);
 			}
-		}, function(res) {
-			res.on('data', function(data) {
-				req.response = (req.response || '') + data.toString();
-			}).on('end', function() {
-				if (res.statusCode !== 200) {
-					return callback({error: 'Status code !== 200 (' + res.statusCode + '). Rate limited or too slow proxy?', response: req.response}, undefined);
-				}
 
-				var result = undefined;
-				try {
-					result = JSON.parse(req.response);
-					if (result && Array.isArray(result) && result.length === 0) {
-						return callback(undefined, undefined);
-					} else {
-						return callback(undefined, result);
-					}
-				} catch (e) {
-					return callback(e, undefined);
+			var result = undefined;
+			try {
+				result = JSON.parse(req.response);
+				if (result && Array.isArray(result) && result.length === 0) {
+					return callback(undefined, undefined);
+				} else {
+					return callback(undefined, result);
 				}
-			});
-		});
-		req.on('error', function(err) {
-			setTimeout(function() {
-				tryPassword(password, app, callback);
-			}, 2000);
-		});
-		req.end();
-	} else {
-		var req = http.request({
-			hostname: 'store.steampowered.com',
-			path: '/actions/clues?key=' + encodeURIComponent(password) + '&_=' + (new Date().getTime()),
-			headers: {
-				Referer: 'http://store.steampowered.com/app/' + app + '/'
+			} catch (e) {
+				return callback(e, undefined);
 			}
-		}, function(res) {
-			res.on('data', function(data) {
-				req.response = (req.response || '') + data.toString();
-			}).on('end', function() {
-				if (res.statusCode !== 200) {
-					return callback({error: 'Status code !== 200 (' + res.statusCode + '). Rate limited?', response: req.response}, undefined);
-				}
-
-				var result = undefined;
-				try {
-					result = JSON.parse(req.response);
-					if (result && Array.isArray(result) && result.length === 0) {
-						return callback(undefined, undefined);
-					} else {
-						return callback(undefined, result);
-					}
-				} catch (e) {
-					return callback(e, undefined);
-				}
-			});
 		});
-		req.on('error', function(err) {
-			setTimeout(function() {
-				tryPassword(password, app, callback);
-			}, 2000);
-		});
-		req.end();
-	}
+	});
+	req.on('error', function(err) {
+		setTimeout(function() {
+			tryPassword(password, app, callback);
+		}, 2000);
+	});
+	req.end();
 }
 
 function tryWintercomic(password, callback) {
 	var req = http.request({
 		hostname: 'store.steampowered.com',
+		agent: torAgent,
 		path: '/wintercomic/' + encodeURIComponent(password)
 	}, function(res) {
 		res.on('data', function(data) {

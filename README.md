@@ -15,14 +15,15 @@ Tor support?
 ---
 Tor support thanks to Fillerix99 and nepeat.
 
-1. Download and install Tor browser [Here](https://www.torproject.org/index.html.en).
- 
+If you don't know how to setup tor:
+
+1. Download and install Tor browser [here](https://www.torproject.org/index.html.en).
 2. Run Tor Browser in background.
- 
-3. Edit config.json and set the tor config to "true".
+3. Edit config.json and change `"tor": false` to `"tor": true`.
+4. Start the script as usual in bot or password mode and all traffic will be sent through tor.
 
-4. Start the script as normal in bot or password mode and all traffic will be 
-"proxied" with the help of tor.
+If you know how to setup tor:
 
-(If it says module socks not found, execute npm install socks or just npm install in the main directory.)
-
+1. Start tor.
+2. Edit config.json and set `tor` to `{"port": 9050}` (or whichever port you are using).
+3. Run the script like you normally would.
