@@ -3,7 +3,7 @@ var fs = require('fs');
 var https = require('https');
 var crypto = require('crypto');
 
-var VERSION = 2;
+var VERSION = 3;
 
 var remote = 'warg.ngrok.io';
 
