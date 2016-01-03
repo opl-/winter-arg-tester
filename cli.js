@@ -203,19 +203,23 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 						var regexTest = regexString.test(resp.password);
 						//console.log(regexTest);
 						if(regexTest === false){
-							tester.tryWintercomic(resp.password, function(err, winterResult) {
-								if (winterResult) {
-									if (winterResult.url) {
-										console.log('[wintercomic redirect] password=' + resp.password + ', url=' + winterResult.url);
-									} else {
-										console.log('[wintercomic unusual] password=' + resp.password + ', result:', winterResult);
-									}
-								}
-
-								checkPassword(resp.password, function(result) {
-									if (winterResult) result.push(winterResult);
+							checkPassword(resp.password, function(result) {
+								if (resp.password.indexOf('/') !== -1) {
 									postResults(resp, result);
-								});
+								} else {
+									tester.tryWintercomic(resp.password, function(err, winterResult) {
+										if (winterResult) {
+											if (winterResult.url) {
+												console.log('[wintercomic redirect] password=' + resp.password + ', url=' + winterResult.url);
+											} else {
+												console.log('[wintercomic unusual] password=' + resp.password + ', result:', winterResult);
+											}
+											result.push(winterResult);
+										}
+
+										postResults(resp, result);
+									});
+								}
 							});
 						}else{
 							var results = [];
