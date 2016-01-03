@@ -117,16 +117,18 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 		process.exit();
 	});
 
-	tester.tryWintercomic(resp.password, function(err, winterResult) {
+	var password = process.argv.slice(3, process.argv.length).join(' ');
+
+	tester.tryWintercomic(password, function(err, winterResult) {
 		if (winterResult) {
 			if (winterResult.url) {
-				console.log('[wintercomic redirect] password=' + resp.password + ', url=' + winterResult.url);
+				console.log('[wintercomic redirect] password=' + password + ', url=' + winterResult.url);
 			} else {
-				console.log('[wintercomic unusual] password=' + resp.password + ', result:', winterResult);
+				console.log('[wintercomic unusual] password=' + password + ', result:', winterResult);
 			}
 		}
 
-		checkPassword(process.argv.slice(3, process.argv.length).join(' '), function(result) {
+		checkPassword(password, function(result) {
 			process.exit();
 		});
 	});
