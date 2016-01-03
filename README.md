@@ -24,3 +24,5 @@ Tor support thanks to Fillerix99 and nepeat.
 4. Start the script as normal in bot or password mode and all traffic will be 
 "proxied" with the help of tor.
 
+(If it says module socks not found, execute npm install socks or just npm install in the main directory.)
+
