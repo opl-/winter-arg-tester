@@ -2,10 +2,14 @@
 
 var http = require('http');
 var fs = require("fs");
-var Socks = require('socks');
 var config = require('./config.json');
 
-var socksAgent = new Socks.Agent({
+config.tor = config.tor || "false";
+
+function tryPassword(password, app, callback) {
+	if (config.tor == "true") {
+		var Socks = require('socks');
+		var socksAgent = new Socks.Agent({
     proxy: {
         ipaddress: "127.0.0.1",
         port: 9150,
@@ -14,11 +18,6 @@ var socksAgent = new Socks.Agent({
     false, // we are connecting to tor, set to false
     false // rejectUnauthorized option passed to tor, set to false
 );
-
-config.tor = config.tor || "false";
-
-function tryPassword(password, app, callback) {
-	if (config.tor == "true") {
 		var req = http.request({
 			hostname: 'store.steampowered.com',
 			agent: socksAgent,
