@@ -1,11 +1,22 @@
 {
-  "name": "password-tester",
+  "name": "winter-arg-tester",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node.js stuff for Valve's Winter 2015 ARG",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "opl",
-  "license": "MIT"
+  "author": "opl-",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opl-/winter-arg-tester.git"
+  },
+  "bugs": {
+    "url": "https://github.com/opl-/winter-arg-tester/issues"
+  },
+  "homepage": "https://github.com/opl-/winter-arg-tester#readme",
+  "dependencies": {
+    "socks": "^1.1.8"
+  }
 }

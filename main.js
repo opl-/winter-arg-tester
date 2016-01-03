@@ -1,10 +1,26 @@
 /** Took some inspiration from Dinnerbone's code (https://gist.github.com/Dinnerbone/fa3152176653398b312e) **/
 
 var http = require('http');
+var fs = require("fs");
+var config = require('./config.json');
+
+var torAgent = undefined;
+if (config.tor) {
+	var Socks = require('socks');
+
+	torAgent = new Socks.Agent({
+		proxy: {
+			ipaddress: config.tor && config.tor.host ? config.tor.host : '127.0.0.1',
+			port: config.tor && config.tor.port ? config.tor.port : 9150,
+			type: 5,
+		}
+	}, false, false);
+}
 
 function tryPassword(password, app, callback) {
 	var req = http.request({
 		hostname: 'store.steampowered.com',
+		agent: torAgent,
 		path: '/actions/clues?key=' + encodeURIComponent(password) + '&_=' + (new Date().getTime()),
 		headers: {
 			Referer: 'http://store.steampowered.com/app/' + app + '/'
@@ -41,6 +57,7 @@ function tryPassword(password, app, callback) {
 function tryWintercomic(password, callback) {
 	var req = http.request({
 		hostname: 'store.steampowered.com',
+		agent: torAgent,
 		path: '/wintercomic/' + encodeURIComponent(password)
 	}, function(res) {
 		res.on('data', function(data) {
@@ -80,4 +97,4 @@ module.exports = {
 	tryPassword: tryPassword,
 	tryWintercomic: tryWintercomic,
 	ensureValid: ensureValid
-}
+};
