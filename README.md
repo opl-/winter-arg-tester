@@ -14,9 +14,13 @@ How do I use this?
 Tor support?
 ---
 Tor support thanks to Fillerix99 and nepeat.
+
 1. Download and install Tor browser [Here](https://www.torproject.org/index.html.en).
+ 
 2. Run Tor Browser in background.
+ 
 3. Edit config.json and set the tor config to "true".
+
 4. Start the script as normal in bot or password mode and all traffic will be 
 "proxied" with the help of tor.
 
