@@ -38,6 +38,34 @@ function tryPassword(password, app, callback) {
 	req.end();
 }
 
+function tryWintercomic(password, callback) {
+	var req = http.request({
+		hostname: 'store.steampowered.com',
+		path: '/wintercomic/' + encodeURIComponent(password)
+	}, function(res) {
+		res.on('data', function(data) {
+			req.response = (req.response || '') + data.toString();
+		}).on('end', function() {
+			if (res.statusCode === 200) {
+				return callback(undefined, undefined);
+			} else {
+				return callback(undefined, {
+					url: res.headers.location ? res.headers.location : undefined,
+					headers: res.headers,
+					statusCode: res.statusCode,
+					body: req.response
+				});
+			}
+		});
+	});
+	req.on('error', function(err) {
+		setTimeout(function() {
+			tryWintercomic(password, callback);
+		}, 2000);
+	});
+	req.end();
+}
+
 function ensureValid(callback) {
 	tryPassword('94050999014715', 6900, function(err, result) {
 		if (!err && result && result.response && result.response === 'ic/4f21ca7') {
@@ -50,5 +78,6 @@ function ensureValid(callback) {
 
 module.exports = {
 	tryPassword: tryPassword,
+	tryWintercomic: tryWintercomic,
 	ensureValid: ensureValid
 }
