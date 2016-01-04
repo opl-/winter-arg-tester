@@ -152,7 +152,7 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
             }
 
             var password = text[i];
-            if (text[i] == '') {
+            if (text[i].trim() == '') {
                 out++;
                 checkList(i + 1);
             } else
