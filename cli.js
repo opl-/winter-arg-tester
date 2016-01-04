@@ -149,7 +149,6 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 
         function checkList(i) {
             var password = text[i];
-            console.log(password);
             tester.tryWintercomic(password, function(err, winterResult) {
                 if (winterResult) {
                     if (winterResult.url) {
