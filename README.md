@@ -10,6 +10,7 @@ How do I use this?
   * `node cli help` to print the help message.
   * `node cli password <password>` where `<password>` is the phrase you want to test to check it for all games.
   * `node cli bot` to run in bot mode, which automatically gets passwords from a database and tests them without you having to do anything.
+  * `node cli list` to check all the passwords in custom-list.txt for all games.
   
 Tor support?
 ---
