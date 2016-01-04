@@ -103,6 +103,8 @@ function printHelp() {
 	console.log('Prints this message.');
 	console.log('== password <password>');
 	console.log('Check <password> against all app ids listed in a text file (default app-list.txt). Don\'t use quotes!');
+	console.log('== list');
+	console.log('Bruteforces all passwords in a text file (defaul custom-list.txt).');
 	console.log('== bot');
 	console.log('Automatically checks passwords.');
 }
