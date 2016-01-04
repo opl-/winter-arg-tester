@@ -135,12 +135,12 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 		});
 	});
 }else if (process.argv[2] === 'list') {
-    fs.readFile('custom-list.txt', function(err, logData) {
+    fs.readFile('custom-list.txt', function(err, buffer) {
         if (err) {
             console.log('Error: custom-list.txt does not exist.');
             return;
         }
-        var text = logData.toString().split('\n');
+        var text = buffer.toString().split('\n');
         var out = 0;
         checkList(0);
 
