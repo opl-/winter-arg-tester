@@ -141,31 +141,34 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
             return;
         }
         var text = logData.toString().split('\n');
-        if (text[0] == '') {
-            console.log("Error: custom-list.txt is empty.");
-            return;
-        }
+        var out = 0;
         checkList(0);
 
         function checkList(i) {
+            if (i == text.length) {
+                if (out == text.length)
+                    console.log('Error: custom-list.txt is empty');
+                process.exit();
+            }
+
             var password = text[i];
-            tester.tryWintercomic(password, function(err, winterResult) {
-                if (winterResult) {
-                    if (winterResult.url) {
-                        console.log('[wintercomic redirect] password=' + password + ', url=' + winterResult.url);
-                    } else {
-                        console.log('[wintercomic unusual] password=' + password + ', result:', winterResult);
+            if (text[i] == '') {
+                out++;
+                checkList(i + 1);
+            } else
+                tester.tryWintercomic(password, function(err, winterResult) {
+                    if (winterResult) {
+                        if (winterResult.url) {
+                            console.log('[wintercomic redirect] password=' + password + ', url=' + winterResult.url);
+                        } else {
+                            console.log('[wintercomic unusual] password=' + password + ', result:', winterResult);
+                        }
                     }
-                }
 
-                checkPassword(password, function(result) {
-                    if (i == text.length - 1)
-                        process.exit();
-                    else
+                    checkPassword(password, function(result) {
                         checkList(i + 1);
-
+                    });
                 });
-            });
         }
 
     });
