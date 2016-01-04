@@ -103,6 +103,8 @@ function printHelp() {
 	console.log('Prints this message.');
 	console.log('== password <password>');
 	console.log('Check <password> against all app ids listed in a text file (default app-list.txt). Don\'t use quotes!');
+	console.log('== list');
+	console.log('Bruteforces all passwords in a text file (default custom-list.txt).');
 	console.log('== bot');
 	console.log('Automatically checks passwords.');
 }
@@ -132,6 +134,45 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 			process.exit();
 		});
 	});
+}else if (process.argv[2] === 'list') {
+    fs.readFile('custom-list.txt', function(err, buffer) {
+        if (err) {
+            console.log('Error: custom-list.txt does not exist.');
+            return;
+        }
+        var text = buffer.toString().split('\n');
+        var out = 0;
+        checkList(0);
+
+        function checkList(i) {
+            if (i == text.length) {
+                if (out == text.length)
+                    console.log('Error: custom-list.txt is empty.');
+                process.exit();
+            }
+
+            var password = text[i];
+            if (text[i] == '') {
+                out++;
+                checkList(i + 1);
+            } else
+                tester.tryWintercomic(password, function(err, winterResult) {
+                    if (winterResult) {
+                        if (winterResult.url) {
+                            console.log('[wintercomic redirect] password=' + password + ', url=' + winterResult.url);
+                        } else {
+                            console.log('[wintercomic unusual] password=' + password + ', result:', winterResult);
+                        }
+                    }
+
+                    checkPassword(password, function(result) {
+                        checkList(i + 1);
+                    });
+                });
+        }
+
+    });
+
 } else if (process.argv[2] === 'bot') {
 	process.on('SIGINT', function() {
 		process.stdout.write('\n\r');
