@@ -132,6 +132,37 @@ if (process.argv.length < 3 || process.argv[2] === 'help') {
 			process.exit();
 		});
 	});
+}else if (process.argv[2] === 'list') {
+    fs.readFile('custom-list.txt', function(err, logData) {
+        if (err) {
+            console.log('Error: custom-list.txt does not exist');
+            return;
+        }
+        var text = logData.toString().split('\n');
+        if (!text[0] == '') {
+            for (var i = 0; i < text.length; i++) {
+                var password = text[i];
+                tester.tryWintercomic(password, function(err, winterResult) {
+                    if (winterResult) {
+                        if (winterResult.url) {
+                            console.log('[wintercomic redirect] password=' + password + ', url=' + winterResult.url);
+                        } else {
+                            console.log('[wintercomic unusual] password=' + password + ', result:', winterResult);
+                        }
+                    }
+
+                    checkPassword(password, function(result) {
+                        process.exit();
+                        console.log("Done!");
+                    });
+                });
+            }
+        } else
+            console.log("Error: custom-list.txt is empty.");
+
+
+    });
+
 } else if (process.argv[2] === 'bot') {
 	process.on('SIGINT', function() {
 		process.stdout.write('\n\r');
